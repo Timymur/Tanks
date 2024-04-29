@@ -6,10 +6,15 @@ import Sprite from "./src/sprite.js";
 
 const canvas = document.getElementById('canvas'); //Передадим на view
 const context = canvas.getContext("2d");
-const sprite = new Sprite('./data/sprite.png');
+const sprite = new Sprite('assets/sprite.jpg');
+
+
+
+
 new World();
 new View();
-//Контролирующий класс, он должен иметь доступ к объекту мира и объекту представления
+
+//Контролирующий класс, он  имеeт доступ к объекту мира и объекту представления
 const game = new Game({
     //Имя переменной: тип данных
     world: new World(),

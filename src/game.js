@@ -15,12 +15,28 @@ export default class Game{ //Control class
 
     async init(){
         this.view.init();
+
+        document.addEventListener('keydown', event=>{ // code - нажатая клавиша
+            event.preventDefault();
+            switch (event.code){
+                case "ArrowUp":
+                    this.world.player1Tank.y-=1;
+                case "ArrowRight":
+                    this.world.player1Tank.x+=1;
+                case "ArrowDown":
+                    this.world.player1Tank.y+=1;
+                case "ArrowLeft":
+                    this.world.player1Tank.x-=1;
+                case "Space":
+                    
+            }
+        });
     }
     start(){
         requestAnimationFrame(this.loop);
     }
     loop(){ // метод цикла игры
-        console.log("LOOP");
+        
         // Получение действия
 
         // обновление мира world
