@@ -3,6 +3,7 @@ export default class Game{ //Control class
         this.world = world;
         this.view = view;
         this.levels = levels;
+        this.activeKeys = new Set(); // коллекция, не имеет повторяющихся значений
 
         //Получается что loop будет постоянно обновлять свои аргументы при помощи метода bind
         this.loop = this.loop.bind(this); //Метод bind() создаёт новую функцию,( подставляя измененные значения)
@@ -16,20 +17,36 @@ export default class Game{ //Control class
     async init(){
         this.view.init();
 
-        document.addEventListener('keydown', event=>{ // code - нажатая клавиша
-            event.preventDefault();
+        document.addEventListener('keydown', event=>{ // event.code - нажатая клавиша
+            event.preventDefault(); // не прокручивается экран, при нажатии на клавишу
             switch (event.code){
                 case "ArrowUp":
-                    this.world.player1Tank.y-=1;
                 case "ArrowRight":
-                    this.world.player1Tank.x+=1;
                 case "ArrowDown":
-                    this.world.player1Tank.y+=1;
                 case "ArrowLeft":
-                    this.world.player1Tank.x-=1;
                 case "Space":
-                    
+                case "Space":
+                case "Enter":
+                   this.activeKeys.add(event.code); //  добавляем в коллекцию нажатую клавишу   
             }
+
+            
+        });
+
+
+        document.addEventListener('keyup', event=>{ // отпускание клавиши, нет действия движения
+            event.preventDefault(); // 
+            switch (event.code){
+                case "ArrowUp":
+                case "ArrowRight":
+                case "ArrowDown":
+                case "ArrowLeft":
+                case "Space":
+                case "Enter":
+                    this.activeKeys.delete(event.code); //  удаляем из коллекции нажатую клавишу   
+
+            }       
+            
         });
     }
     start(){
@@ -40,7 +57,7 @@ export default class Game{ //Control class
         // Получение действия
 
         // обновление мира world
-        this.world.update();
+        this.world.update(this.activeKeys); // передаем в update world нажатую клавишу key  и действие движения isMoving
         
         // обновленеи отрисовки view
         this.view.update(this.world); // Передаем игровой мир во view

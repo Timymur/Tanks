@@ -18,7 +18,7 @@ new View();
 const game = new Game({
     //Имя переменной: тип данных
     world: new World(),
-    view: new View(context, sprite),
+    view: new View(canvas, context, sprite),
     levels
 });
 
