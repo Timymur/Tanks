@@ -1,8 +1,18 @@
 export default class Sprite{ //  класс спрайт нужен для вытаскивания отдельных элементов с картинки
-    constructor(src){
+    constructor(src, map){
+        this.map = map;
         this.src =  src;
         this.image = new Image();
 
+    }
+
+    set (id, {x, y, width, height}){
+        this.map[id]( [ x, y, width, height ]);
+        return this;
+    }
+
+    get (id){
+        return this.map[id];
     }
 
     async load(){

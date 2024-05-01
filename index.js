@@ -3,10 +3,12 @@ import View from "./src/view.js";
 import Game from "./src/game.js";
 import levels from "./data/levels.js";
 import Sprite from "./src/sprite.js";
+import spriteMap from "./data/sprite-map.js";
+
 
 const canvas = document.getElementById('canvas'); //Передадим на view
 const context = canvas.getContext("2d");
-const sprite = new Sprite('assets/sprite.jpg');
+const sprite = new Sprite('assets/sprite.jpg', spriteMap);
 
 
 

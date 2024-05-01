@@ -1,7 +1,7 @@
 export default class Tanks{
     direction = 0 ;// направление танка
-    x = 20; //Позиция танка
-    y = 20; 
+    x = 64; //Позиция танка
+    y = 192; 
     animationFrame = 0; // Кадр для анимации. 0 это первая картинка спрайта. 1 - вторая
     frames = [
         [28*0, 3, 25, 25,], // up
@@ -27,18 +27,15 @@ export default class Tanks{
         }
         else 
         if(activeKeys.has("ArrowDown")){
-            this.move(2, 'y', 1);
-        
+            this.move(2, 'y', 1);   
         }
         else 
         if(activeKeys.has("ArrowRight")){
-            this.move(1, 'x', 1);
-            
+            this.move(1, 'x', 1);       
         }
         else 
         if(activeKeys.has("ArrowLeft")){
-            this.move(3, 'x', -1);
-            
+            this.move(3, 'x', -1);    
        }
     }
 

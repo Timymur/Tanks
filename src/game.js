@@ -3,6 +3,7 @@ export default class Game{ //Control class
         this.world = world;
         this.view = view;
         this.levels = levels;
+        this.level = 0;
         this.activeKeys = new Set(); // коллекция, не имеет повторяющихся значений
 
         //Получается что loop будет постоянно обновлять свои аргументы при помощи метода bind
@@ -16,6 +17,7 @@ export default class Game{ //Control class
 
     async init(){
         this.view.init();
+        this.world.setLevel(this.levels[this.level]);
 
         document.addEventListener('keydown', event=>{ // event.code - нажатая клавиша
             event.preventDefault(); // не прокручивается экран, при нажатии на клавишу
