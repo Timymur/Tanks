@@ -1,5 +1,6 @@
+import { Direction } from "./constans.js";
 export default class Tanks{
-    direction = 0 ;// направление танка
+    direction = Direction.UP ;// направление танка
     x = 64; //Позиция танка
     y = 192; 
     speed = 1;
@@ -23,25 +24,44 @@ export default class Tanks{
     }
 
     update(world, activeKeys){
-        if(activeKeys.has("ArrowUp") && world.canMove(this)){
-            this.move(0, 'y', -1);
+        if(activeKeys.has("ArrowUp") ){
+            this.turn (Direction.UP); // Меняем направление
+            if(world.canMove(this)){ // Проверка на возможность движения
+                this.move( 'y', -1);
+            }
+            
         }
         else 
-        if(activeKeys.has("ArrowDown")){
-            this.move(2, 'y', 1);   
+        if(activeKeys.has("ArrowDown") ){
+            this.turn (Direction.DOWN); 
+            if(world.canMove(this)){
+                this.move( 'y', 1);  
+            }
+             
         }
         else 
-        if(activeKeys.has("ArrowRight")){
-            this.move(1, 'x', 1);       
+        if(activeKeys.has("ArrowRight")  ){
+            this.turn (Direction.RIGHT); 
+            if(world.canMove(this)  ){
+                this.move( 'x', 1);      
+            }
+            
         }
         else 
-        if(activeKeys.has("ArrowLeft")){
-            this.move(3, 'x', -1);    
+        if(activeKeys.has("ArrowLeft")  ){
+            this.turn (Direction.LEFT); 
+            if(world.canMove(this)){
+                this.move( 'x', -1);
+            }
+                
        }
     }
 
-    move(direction, axis, value){
-        this.direction = direction; // меняем направление
+    turn(direction){
+        this.direction = direction;
+    }
+
+    move( axis, value){
         this[axis]+=value; // меняем позицию танка
         this.animationFrame ^= 1; // ^ булевый оператор используется для переключения на противоположное. Toggle. T - триггер.
 
