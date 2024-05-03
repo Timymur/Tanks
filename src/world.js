@@ -1,6 +1,6 @@
 import Tank from "./tank.js";
+import {CELL_SIZE} from "./constans.js";
 
-const CELL_SIZE = 26;
 
 export default class World{ // Мир
     level = null;
@@ -26,7 +26,12 @@ export default class World{ // Мир
 
     update(activeKeys){ 
        
-        this.player1Tank.update(activeKeys); // функция в tank.js
+        this.player1Tank.update(this, activeKeys); // функция в tank.js
 
     }
+
+    canMove(object){
+        return true;
+    }
+
 }

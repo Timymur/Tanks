@@ -1,4 +1,4 @@
-const CELL_SIZE = 26;
+import {CELL_SIZE} from "./constans.js";
 
 export default class View{ //Класс который будет отображать элементы на экране
                             //Должен имет доступ к холсту, сделаем ссылку на холст(canvas)
@@ -22,8 +22,8 @@ export default class View{ //Класс который будет отображ
     renderLevel(level){
         for (let i = 0; i < level.length; i++){
             for ( let j = 0; j < level[i].length; j++){
-                const object = level[i][j];
-                const [x,y, width, height] = this.sprite.get(object.sprite);
+                const block = level[i][j];
+                const [x,y, width, height] = this.sprite.get(block.sprite);
 
                 this.context.drawImage(
                         this.sprite.image,

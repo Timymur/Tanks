@@ -2,6 +2,7 @@ export default class Tanks{
     direction = 0 ;// направление танка
     x = 64; //Позиция танка
     y = 192; 
+    speed = 1;
     animationFrame = 0; // Кадр для анимации. 0 это первая картинка спрайта. 1 - вторая
     frames = [
         [28*0, 3, 25, 25,], // up
@@ -21,8 +22,8 @@ export default class Tanks{
         return this.frames[this.direction*2 + this.animationFrame];
     }
 
-    update(activeKeys){
-        if(activeKeys.has("ArrowUp")){
+    update(world, activeKeys){
+        if(activeKeys.has("ArrowUp") && world.canMove(this)){
             this.move(0, 'y', -1);
         }
         else 
