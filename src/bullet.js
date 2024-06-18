@@ -1,72 +1,90 @@
-import GameObject from "./game-object.js";
-import {  getAxisForDirection, getValueForDirection } from './utils.js';
+import { BULLET_WIDTH, BULLET_HEIGHT, BULLET_SPRITES } from './constans.js';
+import { getAxisForDirection, getValueForDirection } from './utils.js';
+import GameObject from './game-object.js';
+import Explosion from './explosion.js';
 
-export default class Bullet extends GameObject{
-    constructor({tank, direction, speed, ...args}){
+export default class Bullet extends GameObject {
+    constructor({ tank, direction, speed, ...args }) {
         super(args);
-        this.speed = speed;
+
+        this.type = 'bullet';
+        this.width = BULLET_WIDTH;
+        this.height = BULLET_HEIGHT;
+        this.sprites = BULLET_SPRITES;
         this.direction = direction;
+        this.speed = speed;
         this.tank = tank;
-        this.isExploding = false;
-        this.isDestroyed = false;
-        
-    }
-    get sprite(){
-      
-        return this.sprites[this.animationFrame]; 
-        
-
-    }
-    update(world, activeKeys, frameDelta){
-        if(this.isDestroyed) return this.destroy(world);
-
-        this.animate(frameDelta);
-        this.move(world);
-
+        this.explosion = null;
     }
 
-    move(world){
+    get sprite() {
+        return this.sprites[this.direction];
+    }
+
+    get isExploding() {
+        return Boolean(this.explosion);
+    }
+
+    update({ stage }) {
+        if (this.isExploding) {
+            if (this.explosion.isDestroyed) return this._destroy(stage);
+            return;
+        }
+
         const axis = getAxisForDirection(this.direction);
         const value = getValueForDirection(this.direction);
-        const delta = value * this.speed;
 
-        
-        this[axis] += delta; 
+        this._move(axis, value);
 
-        const isOutOfBounds = world.isOutOfBounds(this);
-        const hasCollision = world.hasCollision(this);
+        const isOutOfBounds = stage.isOutOfBounds(this);
+        const collision = stage.getCollision(this);
 
-        
-        if (isOutOfBounds || hasCollision) {
-            this.speed = 0;
-            this.isExploding = true;
-            
-        }
+        const shouldExplode = collision && this._collide(collision.objects);
 
-    }
-
-    animate(frameDelta){
-        this.frames += frameDelta;
-
-        
-
-        if(!this.isDestroyed && !this.isExploding){
-            return ;
-        }
-
-
-        if(this.animationFrame === 4 ){
-            this.isDestroyed = true;
-        }
-        else if(this.frames > 30){
-            this.animationFrame +=1;
-            this.frames = 0;
+        if (isOutOfBounds || shouldExplode) {
+            this._explode(stage);
         }
     }
 
-    destroy(world){
+    _move(axis, value) {
+        this[axis] += value * this.speed;
+    }
+
+    _destroy(stage) {
         this.tank.bullet = null;
-        world.bullets = world.bullets.filter(bullet=> bullet !== this);
-        
+        this.explosion = null;
+        stage.objects.delete(this);
+    }
+
+    _collide(objects) {
+        let shouldExplode = false;
+
+        for (const object of objects) {
+            if (object === this.tank || object === this.explosion) continue;
+            
+            object.hit(this); // Вывод в консоль обеъкта в который врезалась пуля
+            
+            shouldExplode = true;
+        }
+
+        return shouldExplode;
+    }
+    _explode(world) {
+
+        const [x, y] = this._getExplosionStartingPosition();
+
+        this.speed = 0;
+        this.explosion = new Explosion({ x, y });
+
+        world.objects.add(this.explosion);
+    }
+
+    _getExplosionStartingPosition() {
+        switch (this.direction) {
+            case GameObject.Direction.UP: return [this.left - 10, this.top - 12];
+            case GameObject.Direction.RIGHT: return [this.right - 16, this.top - 12];
+            case GameObject.Direction.DOWN: return [this.left - 10, this.bottom - 16];
+            case GameObject.Direction.LEFT: return [this.left - 16, this.top - 12];
+        }
     }
 }

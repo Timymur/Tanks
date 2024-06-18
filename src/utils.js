@@ -19,7 +19,7 @@ export function getDirectionForKeys(keys) {
 }
 
 export function getAxisForDirection(direction) {
-    return direction % 2 === 0 ? 'y' : 'x';
+    return direction % 2 === 0 ? 'y' : 'x'; // Если остаток от деления равен 0, то возвращаем у. Иначе х. 
 }
 
 export function getValueForDirection(direction) {

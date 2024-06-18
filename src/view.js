@@ -13,17 +13,16 @@ export default class View{ //Класс который будет отображ
         await this.sprite.load();
     }
 
-    update(world){ // обновление отображение, принимает объект  world
+    update(stage){ // обновление отображение, принимает объект  world
         // методы описаны ниже
         this.clearScreen(); // очистка экрана 
              
-        this.renderObjects(world.objects);
+        this.renderStage(stage);
         this.renderGrid();
     }
 
-    renderObjects(objects) {
-        
-        for (const object of objects) {
+    renderStage(stage) {
+        for (const object of stage.objects) {
             const { x, y, width, height, sprite } = object;
             if(!sprite) return;
             

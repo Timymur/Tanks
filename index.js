@@ -1,4 +1,4 @@
-import World from "./src/world.js";
+import Input from "./src/input.js";
 import View from "./src/view.js";
 import Game from "./src/game.js";
 import stages from "./data/stages.js";
@@ -10,13 +10,12 @@ const context = canvas.getContext("2d"); // контекст. Это холст 
 const sprite = new Sprite('assets/sprite.png'); // Спрайт. принмает картинку со спрайтами. sprite-map хранит координаты отдельных частей спрайта
 
 
-new World(); // объект , который содержит отображение уровня и проверки на движение
 new View(); // объект . который отвечает за отображение
 
 //Контролирующий класс, он  имеeт доступ к объекту мира и объекту представления
 const game = new Game({
     //Имя переменной: тип данных. Передаем в конструктор
-    world: new World(),
+    input: new Input(),
     view: new View(canvas, context, sprite),
     stages // уровни
 });

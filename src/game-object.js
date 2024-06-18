@@ -1,5 +1,12 @@
 export default class GameObject { // игровой объект, хранит координаты, размеры и спрайт объекта
-    constructor({ x, y, width, height, sprites }) {
+    static Direction = {
+        UP: 0,
+        RIGHT: 1,
+        DOWN: 2,
+        LEFT: 3
+    };
+    
+    constructor({ x, y, width, height, sprites } = {}) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -7,7 +14,6 @@ export default class GameObject { // игровой объект, хранит �
         this.sprites = sprites;
         this.animationFrame = 0;
         this.frames = 0;
-        
     }
 
     // методы возвращения границ объекта
@@ -27,6 +33,10 @@ export default class GameObject { // игровой объект, хранит �
         return this.x;
     }
     update(){
+        
+    }
+
+    hit(){
         
     }
 }
