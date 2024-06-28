@@ -39,6 +39,7 @@ export const TANK_WIDTH = UNIT_SIZE;
 export const TANK_HEIGHT = UNIT_SIZE;
 export const TANK_SPEED = 0.5;
 export const TANK_TURN_THRESHOLD = 8;
+export const TANK_ANIMATION_FRAME = 20;
 
 export const BULLET_WIDTH = 8;
 export const BULLET_HEIGHT = 8;
@@ -72,13 +73,25 @@ export const PLAYER1_TANK_SPRITES = [
 ];
 
 export const ENEMY_TANK_START_POSITIONS = [
-    [0 * UNIT_SIZE, 0],
     [6 * UNIT_SIZE, 0],
+    [0 * UNIT_SIZE, 0],
     [12 * UNIT_SIZE, 0],
 ];
+
+export const ENEMY_TANK_TURN_TIMER_THRESHOLD = 200;
 export const ENEMY_TANK_SPRITES = [
-    [],
-    []
+    [   
+        [8 * UNIT_SIZE, 4 * UNIT_SIZE, UNIT_SIZE, UNIT_SIZE],
+        [9 * UNIT_SIZE, 4 * UNIT_SIZE, UNIT_SIZE, UNIT_SIZE],
+        [14 * UNIT_SIZE, 4 * UNIT_SIZE, UNIT_SIZE, UNIT_SIZE],
+        [15 * UNIT_SIZE, 4 * UNIT_SIZE, UNIT_SIZE, UNIT_SIZE],
+        [12 * UNIT_SIZE, 4 * UNIT_SIZE, UNIT_SIZE, UNIT_SIZE],
+        [13 * UNIT_SIZE, 4 * UNIT_SIZE, UNIT_SIZE, UNIT_SIZE],
+        [10 * UNIT_SIZE, 4 * UNIT_SIZE, UNIT_SIZE, UNIT_SIZE],
+        [11 * UNIT_SIZE, 4 * UNIT_SIZE, UNIT_SIZE, UNIT_SIZE]
+
+    ]
+    
 ];
 
 export const BRICK_WALL_SPRITES = [
@@ -96,3 +109,4 @@ export const STEEL_WALL_SPRITES=[
     [UNIT_SIZE*19, 4.5*UNIT_SIZE, TILE_SIZE, TILE_SIZE],// Кирпич слева
     [UNIT_SIZE*20, 4.5*UNIT_SIZE, TILE_SIZE, TILE_SIZE]
     ];
+

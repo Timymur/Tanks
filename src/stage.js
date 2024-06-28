@@ -47,11 +47,29 @@ export default class Stage {
     }
 
     constructor(data) {
+        this.base = new Base();
+        this.PlayerTank = new PlayerTank();
+        this.enemies = Stage.createEnemies(data.enemies);
+        this.terrain = Stage.createTerrain(data.map);
+        this.enemyTankCount = 0;
+        this.enemyTankTimer = 0;
+        this.enemyTankPositionIndex = 0;
+
+        this.events = new Map();
         this.objects = new Set([
-            new Base(),
-            new PlayerTank(),
-            ...Stage.createTerrain(data.map)
+            this.base,
+            this.PlayerTank,
+            ...this.terrain
         ]);
+
+        this.on('bullet.hit', object => {
+            if(object.type == "enemyTank"){
+                this._removeEnemyTank(object);
+                
+            }
+            
+        });
+        
     }
 
     get width() {
@@ -78,13 +96,33 @@ export default class Stage {
         return 0;
     }
 
-    update(input, frameDelta) {
+    on(event, handler){
+        if(this.events.has(event)){
+            this.events.get(events).add(handler);
+        }
+        else{
+            this.events.set(event, new Set([handler]));
+        }
+    }
+
+    off(event){
+        this.events.get(event)?.delete(handler);
+    }
+
+    emit(event, arg){
+        this.events.get(event)?.forEach(handler => handler(arg));
+    }
+    update(input,frameDelta ) {
         const state = {
             input,
             frameDelta,
             stage: this
         };
+        if(this._shouldAddEnemyTank(frameDelta)){
+            this._addEnemyTank();
+        }
 
+        
         this.objects.forEach(object => object.update(state));
     }
 
@@ -111,6 +149,8 @@ export default class Stage {
         }
     }
 
+    
+
     _getCollisionObjects(object) {
         const objects = new Set();
 
@@ -130,5 +170,27 @@ export default class Stage {
             a.top < b.bottom &&
             a.bottom > b.top
         );
+    }
+    _shouldAddEnemyTank(frameDelta){
+        this.enemyTankTimer += frameDelta;
+
+        return this.enemyTankTimer > 1000 && this.enemyTankCount <3  ;
+
+    }
+    _addEnemyTank(){
+        const tank = this.enemies.shift();
+        if(tank){
+            tank.setPosition(this.enemyTankPositionIndex);
+        
+            this.enemyTankCount +=1;
+            this.enemyTankTimer = 0;
+            this.enemyTankPositionIndex = (this.enemyTankPositionIndex+1) %3  ; 
+            this.objects.add(tank);
+        }
+    }
+
+    _removeEnemyTank(enemyTank){
+        this.objects.delete(enemyTank);
+        this.enemyTankCount-=1;
     }
 }

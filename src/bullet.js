@@ -39,9 +39,10 @@ export default class Bullet extends GameObject {
         const isOutOfBounds = stage.isOutOfBounds(this);
         const collision = stage.getCollision(this);
 
-        const shouldExplode = collision && this._collide(collision.objects);
+        const shouldExplode = collision && this._collide(collision.objects, stage);
 
         if (isOutOfBounds || shouldExplode) {
+            stage.emit('bullet.exploded', this );
             this._explode(stage);
         }
     }
@@ -56,14 +57,14 @@ export default class Bullet extends GameObject {
         stage.objects.delete(this);
     }
 
-    _collide(objects) {
+    _collide(objects, stage) {
         let shouldExplode = false;
 
         for (const object of objects) {
             if (object === this.tank || object === this.explosion) continue;
             
-            object.hit(this); // Вывод в консоль обеъкта в который врезалась пуля
-            
+            object.hit(this); 
+            stage.emit("bullet.hit", object);
             shouldExplode = true;
         }
 

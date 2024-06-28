@@ -1,4 +1,4 @@
-import { TILE_SIZE, TANK_WIDTH, TANK_HEIGHT, TANK_SPEED, TANK_TURN_THRESHOLD } from './constans.js';
+import { TILE_SIZE, TANK_WIDTH, TANK_HEIGHT, TANK_SPEED, TANK_TURN_THRESHOLD, TANK_ANIMATION_FRAME } from './constans.js';
 import { getAxisForDirection } from './utils.js';
 import GameObject from './game-object.js';
 import Bullet from "./bullet.js";
@@ -12,6 +12,7 @@ export default class Tank extends GameObject{
         this.speed = TANK_SPEED;
         this.bulletSpeed = 4;
         this.bullet = null;
+        this.isDestroyed = false;
     }
     
     get sprite() {// у танка при движении меняется спрайт, поэтому используется this.animationFrame, который постоянно менят значение 0 1
@@ -77,7 +78,7 @@ export default class Tank extends GameObject{
     _animate(frameDelta) {
         this.frames += frameDelta;
 
-        if (this.frames > 20) {
+        if (this.frames > TANK_ANIMATION_FRAME) {
             this.animationFrame ^= 1;
             this.frames = 0;
         }
