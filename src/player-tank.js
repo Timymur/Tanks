@@ -1,4 +1,4 @@
-import { Keys, Direction, PLAYER1_TANK_POSITION, PLAYER1_TANK_SPRITES, TANK_SPEED } from './constants.js';
+import { Keys, Direction, PLAYER1_TANK_POSITION, PLAYER1_TANK_SPRITES, TANK_SPEED, UNIT_SIZE } from './constants.js';
 import { getDirectionForKeys, getAxisForDirection, getValueForDirection } from './utils.js';
 import Tank from './tank.js';
 
@@ -12,6 +12,7 @@ export default class PlayerTank extends Tank {
         this.direction = Direction.UP;
         this.speed = TANK_SPEED;
         this.sprites = PLAYER1_TANK_SPRITES;
+        this.countLife = 2;
     }
 
     update({ input, frameDelta, stage }) {
@@ -35,5 +36,19 @@ export default class PlayerTank extends Tank {
         if (input.keys.has(Keys.SPACE)) {
             this.fire(); // Методы в tank
         }
+    }
+    hit() {
+        
+        if(this.countLife == 0){
+            this.explode();
+            this.destroy();
+
+        }
+        else{
+            this.countLife -=1;
+            this.x = 4 * UNIT_SIZE;
+            this.y = 12 * UNIT_SIZE;
+        }
+        
     }
 }

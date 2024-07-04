@@ -66,6 +66,7 @@ export default class Bullet extends GameObject {
             if (!this.shouldCollide(object)) continue;
             
             object.hit(this); 
+            
             stage.emit("bullet.hit", object);
             shouldExplode = true;
         }

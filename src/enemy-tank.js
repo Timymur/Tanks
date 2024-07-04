@@ -3,13 +3,7 @@ import {  getAxisForDirection, getValueForDirection } from './utils.js';
 import Tank from './tank.js';
 
 export default class EnemyTank extends Tank {
-    // static createRandom() {
-    //     const random = Math.floor(Math.random() * 3);
-    //     const [x, y] = ENEMY_TANK_START_POSITIONS[random];
-    //     const sprites = ENEMY_TANK_SPRITES[0];
-
-    //     return new EnemyTank({ x, y, sprites });
-    // }
+    
 
     constructor(args) {
         super(args);
@@ -77,7 +71,7 @@ export default class EnemyTank extends Tank {
     }
 
     shouldBulletRun(frameDelta){
-        const randBulletTimer =  Math.floor(Math.random() * 500000);
+        const randBulletTimer =  Math.floor(Math.random() * 100000);
         
         if ( this.bulletTimer < randBulletTimer ){
             this.bulletTimer += frameDelta;

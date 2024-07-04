@@ -92,7 +92,7 @@ export default class Tank extends GameObject{
 
     hit() {
         this.explode();
-        this.destroy();
+        this.destroy(); 
     }
 
     explode() {

@@ -80,11 +80,14 @@ export default class Stage extends EventEmitter {
 
             bullet.on('destroyed', () => {
                 this.objects.delete(bullet);
+                
             });
         });
 
         this.playerTank.on('destroyed', tank => {
             this.objects.delete(tank);
+            this.emit('gameOver');
+
         });
 
         this.enemyTanks.map(enemyTank => {

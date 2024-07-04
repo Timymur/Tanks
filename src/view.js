@@ -1,4 +1,4 @@
-import {NUMBER_OF_UNITS, UNIT_SIZE, TILE_SIZE} from "./constants.js";
+import {NUMBER_OF_UNITS, UNIT_SIZE, TILE_SIZE , NUMBER_SPRITES, GAMEOVER} from "./constants.js";
 
 const PLAYFIELD_X = UNIT_SIZE;
 const PLAYFIELD_Y = UNIT_SIZE * 0.5;
@@ -27,14 +27,22 @@ export default class View{ //Класс который будет отображ
         await this.sprite.load();
     }
 
-    update(stage){ // обновление отображение, принимает объект  world
+    update(stage, gameOver){ // обновление отображение, принимает объект  world
         // методы описаны ниже
+
         this.clearScreen(); // очистка экрана 
-            
-        this.renderStage(stage);
-        this.renderPanel(stage); 
-        this.renderGrid();
+        if(!gameOver){
+            this.renderStage(stage);
+            this.renderPanel(stage); 
+            //this.renderGrid();
+        }
+        else{
+            this.gameOver();
+        }
+       
     }
+
+
     clearScreen(){ // Очистка экрана после обновления
         this.context.clearRect(0,0, this.canvas.width, this.canvas.height); 
     }
@@ -69,7 +77,7 @@ export default class View{ //Класс который будет отображ
     }
     renderPanel(stage){
         this.renderEnemyTankCounts(stage);
-        this.renderPlayer1Lives();
+        this.renderPlayer1Lives(stage);
         this.renderStageNumber(stage);
         
         
@@ -133,7 +141,7 @@ export default class View{ //Класс который будет отображ
         } 
     }
 
-    renderPlayer1Lives(){ // 1Р отрисовка
+    renderPlayer1Lives(stage){ // 1Р отрисовка
         this.context.drawImage(
             this.sprite.image,
             UNIT_SIZE * 23.5,
@@ -146,25 +154,24 @@ export default class View{ //Класс который будет отображ
             TILE_SIZE
         );
 
-        this.context.drawImage( // количество жизней
-            this.sprite.image,
-            21.5 *UNIT_SIZE,
-            11.5 *UNIT_SIZE,
-            TILE_SIZE,
-            TILE_SIZE,
-            PANEL_X + 2* TILE_SIZE , 
-            PANEL_Y +  PLAYFIELD_HEIGHT *0.5+ TILE_SIZE , 
-            TILE_SIZE, 
-            TILE_SIZE
-        );
-
-        this.context.drawImage( // Красная штука 
+        this.context.drawImage( // Красный танк
             this.sprite.image,
             UNIT_SIZE * 23.5,
             UNIT_SIZE * 9,
             TILE_SIZE,
             TILE_SIZE,
             PANEL_X +  TILE_SIZE , 
+            PANEL_Y +  PLAYFIELD_HEIGHT *0.5 + TILE_SIZE , 
+            TILE_SIZE, 
+            TILE_SIZE
+        );
+        let countLife = stage.playerTank.countLife;
+        
+        
+        this.context.drawImage( // количество жизней
+            this.sprite.image,
+            ...NUMBER_SPRITES[countLife],
+            PANEL_X +  TILE_SIZE + 16, 
             PANEL_Y +  PLAYFIELD_HEIGHT *0.5 + TILE_SIZE , 
             TILE_SIZE, 
             TILE_SIZE
@@ -183,17 +190,25 @@ export default class View{ //Класс который будет отображ
             UNIT_SIZE, 
             UNIT_SIZE
         );
-
-        this.context.drawImage( // количество жизней
+        this.context.drawImage( // Номер уровня
             this.sprite.image,
-            21.5 *UNIT_SIZE,
-            11.5 *UNIT_SIZE,
-            TILE_SIZE,
-            TILE_SIZE,
+            ...NUMBER_SPRITES[1],
             PANEL_X + 2* TILE_SIZE , 
             PANEL_Y +  PLAYFIELD_HEIGHT *0.75+ UNIT_SIZE , 
             TILE_SIZE, 
             TILE_SIZE
+        );
+        
+    }
+
+    gameOver(){
+        this.context.drawImage(  // gameOver
+            this.sprite.image,
+            ...GAMEOVER,
+            PLAYFIELD_WIDTH * 0.5, 
+            PLAYFIELD_HEIGHT* 0.5,
+            UNIT_SIZE *2, 
+            UNIT_SIZE
         );
     }
     

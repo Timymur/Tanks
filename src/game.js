@@ -12,6 +12,7 @@ export default class Game{ //Control class
         this.stageIndex = 0;
         this.frames = 0;
         this.lastFrame = 0;
+        this.gameOver = false;
         //Получается что метод loop будет постоянно обновлять свои аргументы при помощи метода bind
         this.loop = this.loop.bind(this); //Метод bind создаёт новую функцию,( подставляя измененные значения)
                                             //  которая при вызове устанавливает 
@@ -37,7 +38,7 @@ export default class Game{ //Control class
         const frameDelta = currentFrame - this.lastFrame;
 
         this.stage.update(this.input, frameDelta);
-        this.view.update(this.stage);
+        this.view.update(this.stage, this.gameOver);
         this.frames = 0;
 
         this.lastFrame = currentFrame;
@@ -46,7 +47,7 @@ export default class Game{ //Control class
     }
 
     onGameOver() {
-        
+        this.gameOver = true;
         console.log('GAME OVER');
 
 
