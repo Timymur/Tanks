@@ -18,7 +18,7 @@ export const Direction = {
     LEFT: 3
 };
 
-export const ObjectType = {
+export const TerrainType = {
     BASE: 0, 
     BRICK_WALL: 1,
     STEEL_WALL: 2,
@@ -40,6 +40,18 @@ export const TANK_HEIGHT = UNIT_SIZE;
 export const TANK_SPEED = 0.5;
 export const TANK_TURN_THRESHOLD = 8;
 export const TANK_ANIMATION_FRAME = 20;
+
+
+export const TANK_EXPLOSION_WIDTH = UNIT_SIZE ;
+export const TANK_EXPLOSION_HEIGHT = UNIT_SIZE ;
+export const TANK_EXPLOSION_SPEED = 4;
+export const TANK_EXPLOSION_SPRITES = [
+    [16 * UNIT_SIZE, 8 * UNIT_SIZE, UNIT_SIZE, UNIT_SIZE],
+    [17 * UNIT_SIZE, 8 * UNIT_SIZE, UNIT_SIZE, UNIT_SIZE],
+    [18 * UNIT_SIZE, 8 * UNIT_SIZE, UNIT_SIZE, UNIT_SIZE],
+    [19 * UNIT_SIZE, 8 * UNIT_SIZE, UNIT_SIZE * 2, UNIT_SIZE * 2],
+    [21 * UNIT_SIZE, 8 * UNIT_SIZE, UNIT_SIZE * 2, UNIT_SIZE * 2]
+];
 
 export const BULLET_WIDTH = 8;
 export const BULLET_HEIGHT = 8;

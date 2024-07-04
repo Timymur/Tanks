@@ -1,4 +1,5 @@
-export default class GameObject { // игровой объект, хранит координаты, размеры и спрайт объекта
+import EventEmitter from "./event-emitter.js";
+export default class GameObject extends EventEmitter { // игровой объект, хранит координаты, размеры и спрайт объекта
     static Direction = {
         UP: 0,
         RIGHT: 1,
@@ -7,6 +8,8 @@ export default class GameObject { // игровой объект, хранит �
     };
     
     constructor({ x, y, width, height, sprites } = {}) {
+        super();
+
         this.x = x;
         this.y = y;
         this.width = width;
@@ -14,6 +17,8 @@ export default class GameObject { // игровой объект, хранит �
         this.sprites = sprites;
         this.animationFrame = 0;
         this.frames = 0;
+        this.isDestructable = false;
+        this.isDestroyed = false;
     }
 
     // методы возвращения границ объекта
@@ -36,7 +41,11 @@ export default class GameObject { // игровой объект, хранит �
         
     }
 
-    hit(){
-        
+    move(axis, value) {
+        this[axis] += value * this.speed;
+    }
+
+    stop() {
+        this.speed = 0;
     }
 }

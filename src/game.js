@@ -1,7 +1,8 @@
 import Stage from './stage.js';
+import stages from './stages.js';
 
 export default class Game{ //Control class
-    constructor({input, view, stages}){ //Определение конструктора
+    constructor({input, view}){ //Определение конструктора
         this.input = input;
         this.view = view;
         this.stages = stages;
@@ -18,14 +19,18 @@ export default class Game{ //Control class
                                             //   В метод также передаётся набор аргументов, 
                                             //   которые будут установлены перед переданными 
                                             //   в привязанную функцию аргументами при её вызове.
+    
+        this.onGameOver = this.onGameOver.bind(this);
     }
 
     async init(){
-        this.view.init(); // Отрисовка изображений
+        await this.view.init(); // Отрисовка изображений
         
     }
     start(){ // Первый запуск цикла игры
-        this.stage = new Stage(this.stages[this.stageIndex]);
+        this.stage = new Stage(stages[this.stageIndex]);
+        this.stage.on('gameOver', this.onGameOver);
+        this.stage.number = this.stageIndex + 1;
         requestAnimationFrame(this.loop); // метод сообщает браузеру, что мы хотим выполнить анимацию
     }
     loop(currentFrame){ // метод цикла игры
@@ -38,5 +43,12 @@ export default class Game{ //Control class
         this.lastFrame = currentFrame;
 
         requestAnimationFrame(this.loop);
+    }
+
+    onGameOver() {
+        
+        console.log('GAME OVER');
+
+
     }
 }

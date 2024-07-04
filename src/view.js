@@ -1,4 +1,11 @@
-import {NUMBER_OF_UNITS, UNIT_SIZE, TILE_SIZE} from "./constans.js";
+import {NUMBER_OF_UNITS, UNIT_SIZE, TILE_SIZE} from "./constants.js";
+
+const PLAYFIELD_X = UNIT_SIZE;
+const PLAYFIELD_Y = UNIT_SIZE * 0.5;
+const PLAYFIELD_WIDTH = NUMBER_OF_UNITS * UNIT_SIZE;
+const PLAYFIELD_HEIGHT = NUMBER_OF_UNITS * UNIT_SIZE;
+const PANEL_X = PLAYFIELD_WIDTH + PLAYFIELD_X; 
+const PANEL_Y = PLAYFIELD_Y;
 
 export default class View{ //Класс который будет отображать элементы на экране
                             //Должен имет доступ к холсту, сделаем ссылку на холст(canvas)
@@ -9,6 +16,13 @@ export default class View{ //Класс который будет отображ
         this.sprite = sprite;
     }
 
+    get width(){
+        return this.canvas.width;
+    }
+
+    get height(){
+        return this.canvas.height;
+    }
     async init() { // После загрузки изображения во view, метод вернет 1 в game, и даст возможность дальше выполнять код
         await this.sprite.load();
     }
@@ -16,12 +30,22 @@ export default class View{ //Класс который будет отображ
     update(stage){ // обновление отображение, принимает объект  world
         // методы описаны ниже
         this.clearScreen(); // очистка экрана 
-             
+            
         this.renderStage(stage);
+        this.renderPanel(stage); 
         this.renderGrid();
+    }
+    clearScreen(){ // Очистка экрана после обновления
+        this.context.clearRect(0,0, this.canvas.width, this.canvas.height); 
     }
 
     renderStage(stage) {
+        this.context.fillStyle = '#626262';
+        this.context.fillRect(0, 0 , this.width, this.height );
+        
+        this.context.fillStyle = '#000000';
+        this.context.fillRect(PLAYFIELD_X, PLAYFIELD_Y , PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT);
+
         for (const object of stage.objects) {
             const { x, y, width, height, sprite } = object;
             if(!sprite) return;
@@ -29,7 +53,10 @@ export default class View{ //Класс который будет отображ
             this.context.drawImage(
                 this.sprite.image,
                 ...sprite,
-                x, y, width, height
+                PLAYFIELD_X + x,
+                PLAYFIELD_Y + y,
+                width, 
+                height
             );
 
             if (object.debug) {
@@ -40,26 +67,134 @@ export default class View{ //Класс который будет отображ
             }
         }
     }
+    renderPanel(stage){
+        this.renderEnemyTankCounts(stage);
+        this.renderPlayer1Lives();
+        this.renderStageNumber(stage);
+        
+        
+    }
     
     renderGrid() { // метод отрисовки сетки
         for (let y = 0; y < NUMBER_OF_UNITS; y++) {
             for (let x = 0; x < NUMBER_OF_UNITS; x++) {
                 this.context.strokeStyle = '#ffffff';
                 this.context.lineWidth = .2;
-                this.context.strokeRect(x * UNIT_SIZE + 1, y * UNIT_SIZE + 1, UNIT_SIZE - 2, UNIT_SIZE - 2);
+                this.context.strokeRect(
+                    (x * UNIT_SIZE + 1) + PLAYFIELD_X,
+                    (y * UNIT_SIZE + 1) + PLAYFIELD_Y,
+                    UNIT_SIZE - 2, 
+                    UNIT_SIZE - 2);
             }
         }
         for (let y = 0; y < NUMBER_OF_UNITS * 2; y++) {
             for (let x = 0; x < NUMBER_OF_UNITS * 2; x++) {
                 this.context.strokeStyle = '#ffffff';
                 this.context.lineWidth = .1;
-                this.context.strokeRect(x * TILE_SIZE + 1, y * TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2);
+                this.context.strokeRect(
+                    (x * TILE_SIZE + 1) + PLAYFIELD_X, 
+                    (y * TILE_SIZE + 1) + PLAYFIELD_Y, 
+                    TILE_SIZE - 2, 
+                    TILE_SIZE - 2);
             }
         }
     }
     
-
-    clearScreen(){ // Очистка экрана после обновления
-        this.context.clearRect(0,0, this.canvas.width, this.canvas.height); 
+    renderEnemyTankCounts(stage){
+        for(let i = 0; i < stage.enemyTanks.length ; i ++ ){
+            
+            if ( i < 10){
+                
+                this.context.drawImage(
+                    this.sprite.image,
+                    UNIT_SIZE * 20,
+                    UNIT_SIZE * 12,
+                    TILE_SIZE,
+                    TILE_SIZE,
+                    PANEL_X + 1 * TILE_SIZE , 
+                    PANEL_Y + i * TILE_SIZE , 
+                    TILE_SIZE -3, 
+                    TILE_SIZE -3
+                );
+            }
+            else{
+                this.context.drawImage(
+                    this.sprite.image,
+                    UNIT_SIZE * 20,
+                    UNIT_SIZE * 12,
+                    TILE_SIZE,
+                    TILE_SIZE,
+                    PANEL_X + 2 * TILE_SIZE , 
+                    PANEL_Y + i * TILE_SIZE - 160 , 
+                    TILE_SIZE-3, 
+                    TILE_SIZE-3
+                );
+            }
+        } 
     }
+
+    renderPlayer1Lives(){ // 1Р отрисовка
+        this.context.drawImage(
+            this.sprite.image,
+            UNIT_SIZE * 23.5,
+            UNIT_SIZE * 8.5,
+            UNIT_SIZE,
+            TILE_SIZE,
+            PANEL_X +  TILE_SIZE , 
+            PANEL_Y +  PLAYFIELD_HEIGHT *0.5, 
+            UNIT_SIZE, 
+            TILE_SIZE
+        );
+
+        this.context.drawImage( // количество жизней
+            this.sprite.image,
+            21.5 *UNIT_SIZE,
+            11.5 *UNIT_SIZE,
+            TILE_SIZE,
+            TILE_SIZE,
+            PANEL_X + 2* TILE_SIZE , 
+            PANEL_Y +  PLAYFIELD_HEIGHT *0.5+ TILE_SIZE , 
+            TILE_SIZE, 
+            TILE_SIZE
+        );
+
+        this.context.drawImage( // Красная штука 
+            this.sprite.image,
+            UNIT_SIZE * 23.5,
+            UNIT_SIZE * 9,
+            TILE_SIZE,
+            TILE_SIZE,
+            PANEL_X +  TILE_SIZE , 
+            PANEL_Y +  PLAYFIELD_HEIGHT *0.5 + TILE_SIZE , 
+            TILE_SIZE, 
+            TILE_SIZE
+        );
+    }
+
+    renderStageNumber(stage){
+        this.context.drawImage(  // Флаг
+            this.sprite.image,
+            UNIT_SIZE * 23.5,
+            UNIT_SIZE * 11.5,
+            UNIT_SIZE,
+            UNIT_SIZE,
+            PANEL_X +  TILE_SIZE , 
+            PANEL_Y +  PLAYFIELD_HEIGHT *0.75, 
+            UNIT_SIZE, 
+            UNIT_SIZE
+        );
+
+        this.context.drawImage( // количество жизней
+            this.sprite.image,
+            21.5 *UNIT_SIZE,
+            11.5 *UNIT_SIZE,
+            TILE_SIZE,
+            TILE_SIZE,
+            PANEL_X + 2* TILE_SIZE , 
+            PANEL_Y +  PLAYFIELD_HEIGHT *0.75+ UNIT_SIZE , 
+            TILE_SIZE, 
+            TILE_SIZE
+        );
+    }
+    
 }

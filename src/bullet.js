@@ -1,7 +1,7 @@
-import { BULLET_WIDTH, BULLET_HEIGHT, BULLET_SPRITES } from './constans.js';
+import { BULLET_WIDTH, BULLET_HEIGHT, BULLET_SPRITES, Direction } from './constants.js';
 import { getAxisForDirection, getValueForDirection } from './utils.js';
 import GameObject from './game-object.js';
-import Explosion from './explosion.js';
+import BulletExplosion from './bullet-explosion.js';
 
 export default class Bullet extends GameObject {
     constructor({ tank, direction, speed, ...args }) {
@@ -25,43 +25,45 @@ export default class Bullet extends GameObject {
         return Boolean(this.explosion);
     }
 
+    get isFromEnemyTank() {
+        return this.tank?.type === 'enemyTank';
+    }
+
+    get isFromPlayerTank() {
+        return this.tank?.type === 'playerTank';
+    }
+
+
+
     update({ stage }) {
-        if (this.isExploding) {
-            if (this.explosion.isDestroyed) return this._destroy(stage);
-            return;
-        }
+        if (this.isExploding) return;
+    
 
         const axis = getAxisForDirection(this.direction);
         const value = getValueForDirection(this.direction);
 
-        this._move(axis, value);
+        this.move(axis, value);
 
         const isOutOfBounds = stage.isOutOfBounds(this);
         const collision = stage.getCollision(this);
 
-        const shouldExplode = collision && this._collide(collision.objects, stage);
+        const shouldExplode = isOutOfBounds || collision && this.collide(collision.objects, stage);
 
-        if (isOutOfBounds || shouldExplode) {
-            stage.emit('bullet.exploded', this );
-            this._explode(stage);
+        if (shouldExplode) {
+            this.stop();
+            this.explode();   
         }
     }
 
-    _move(axis, value) {
-        this[axis] += value * this.speed;
-    }
+    
 
-    _destroy(stage) {
-        this.tank.bullet = null;
-        this.explosion = null;
-        stage.objects.delete(this);
-    }
 
-    _collide(objects, stage) {
+    collide(objects, stage) {
         let shouldExplode = false;
 
         for (const object of objects) {
-            if (object === this.tank || object === this.explosion) continue;
+
+            if (!this.shouldCollide(object)) continue;
             
             object.hit(this); 
             stage.emit("bullet.hit", object);
@@ -70,22 +72,43 @@ export default class Bullet extends GameObject {
 
         return shouldExplode;
     }
-    _explode(world) {
 
-        const [x, y] = this._getExplosionStartingPosition();
-
-        this.speed = 0;
-        this.explosion = new Explosion({ x, y });
-
-        world.objects.add(this.explosion);
+    hit() {
+        this.stop();
+        this.explode();
     }
 
-    _getExplosionStartingPosition() {
+    explode() {
+        const [x, y] = this.getExplosionStartingPosition();
+        this.explosion = new BulletExplosion({ x, y });
+        this.explosion.on('destroyed', () => this.destroy());
+        this.emit('explode', this.explosion);
+    }
+
+    destroy() {
+        this.tank = null;
+        this.explosion = null;
+        this.emit('destroyed', this);
+    }
+
+    shouldCollide(object){
+        return (
+            (object.type == "wall") || 
+            (object.type == "base") ||
+            (object.type == "playerTank" && this.isFromEnemyTank) ||
+            (object.type == "enemyTank" && this.isFromPlayerTank) ||
+            (object.type == "bullet" && this.isFromEnemyTank && object.isFromPlayerTank) || 
+            (object.type == "bullet" && this.isFromPlayerTank && isFromEnemyTank)
+        );
+
+    }
+
+    getExplosionStartingPosition() {
         switch (this.direction) {
-            case GameObject.Direction.UP: return [this.left - 10, this.top - 12];
-            case GameObject.Direction.RIGHT: return [this.right - 16, this.top - 12];
-            case GameObject.Direction.DOWN: return [this.left - 10, this.bottom - 16];
-            case GameObject.Direction.LEFT: return [this.left - 16, this.top - 12];
+            case Direction.UP: return [this.left - 10, this.top - 12];
+            case Direction.RIGHT: return [this.right - 16, this.top - 12];
+            case Direction.DOWN: return [this.left - 10, this.bottom - 16];
+            case Direction.LEFT: return [this.left - 16, this.top - 12];
         }
     }
 }

@@ -1,8 +1,10 @@
 import GameObject from "./game-object.js";
-import { BASE_POSITION, BASE_WIDTH, BASE_HEIGHT, BASE_SPRITES } from './constans.js';
+import { BASE_POSITION, BASE_WIDTH, BASE_HEIGHT, BASE_SPRITES } from './constants.js';
 export default class Base extends GameObject{
     constructor(args){
         super(args); // super вызывает конструктор из родительского класса и передает в него аргументы. 
+
+        this.type = 'base';
         this.x = BASE_POSITION[0];
         this.y = BASE_POSITION[1];
         this.width = BASE_WIDTH;
@@ -13,5 +15,9 @@ export default class Base extends GameObject{
 
     get sprite(){
         return this.sprites[Number(this.destroyed)]; // Возвращает спрайт в зависимости от разрушения
+    }
+    hit() {
+        this.destroyed = true;
+        this.emit('destroyed', this);
     }
 }

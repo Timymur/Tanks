@@ -1,25 +1,26 @@
-import { Keys, ENEMY_TANK_START_POSITIONS, ENEMY_TANK_SPRITES, TANK_SPEED, ENEMY_TANK_TURN_TIMER_THRESHOLD } from './constans.js';
-import { getDirectionForKeys, getAxisForDirection, getValueForDirection } from './utils.js';
+import { Direction, ENEMY_TANK_START_POSITIONS, ENEMY_TANK_SPRITES, TANK_SPEED, ENEMY_TANK_TURN_TIMER_THRESHOLD } from './constants.js';
+import {  getAxisForDirection, getValueForDirection } from './utils.js';
 import Tank from './tank.js';
 
 export default class EnemyTank extends Tank {
-    static createRandom() {
-        const random = Math.floor(Math.random() * 3);
-        const [x, y] = ENEMY_TANK_START_POSITIONS[random];
-        const sprites = ENEMY_TANK_SPRITES[0];
+    // static createRandom() {
+    //     const random = Math.floor(Math.random() * 3);
+    //     const [x, y] = ENEMY_TANK_START_POSITIONS[random];
+    //     const sprites = ENEMY_TANK_SPRITES[0];
 
-        return new EnemyTank({ x, y, sprites });
-    }
+    //     return new EnemyTank({ x, y, sprites });
+    // }
 
     constructor(args) {
         super(args);
+
         this.type = "enemyTank";
-        this.direction = Tank.Direction.DOWN;
+        this.direction = Direction.DOWN;
         this.x = 0;
         this.y = 0;
         this.speed = TANK_SPEED * 0.7;
         this.sprites = ENEMY_TANK_SPRITES[0];
-
+        this.bulletTimer = 0;
         this.turnTimer = 0;
         
 
@@ -34,7 +35,8 @@ export default class EnemyTank extends Tank {
 
     update({ stage,  frameDelta }) {
         if(this.isDestroyed){
-            stage.objects.delete(this);
+            this.explode();
+            this.destroy();
             
         }
         const direction = this.direction
@@ -42,35 +44,49 @@ export default class EnemyTank extends Tank {
         const value = getValueForDirection(this.direction);
         
 
-        this._move(axis, value); 
-        this._animate(frameDelta);
+        this.move(axis, value);
+        if (this.shouldBulletRun(frameDelta)) this.fire();
+        this.animate(frameDelta);
+
         const isOutOfBounds = stage.isOutOfBounds(this);
-            const hasCollision = stage.hasCollision(this);
+        const hasCollision = stage.hasCollision(this);
 
-            if (isOutOfBounds || hasCollision) {
+        if (isOutOfBounds || hasCollision) {
                 
-                this._move(axis, -value);
-                if(this._shouldTurn(frameDelta)){
-                    this._turnRandomly();
-                } 
-            }
+            this.move(axis, -value);
+            if(this.shouldTurn(frameDelta)){
+                this.turnRandomly();
+            } 
         }
+    }
 
-        hit(bullet){
-            if(this.isDestroyed) return;
-            this.isDestroyed = true;
+    hit(bullet){
+        if(bullet.isFromEnemyTank) return;
+        super.hit();
             
-        }
-        _shouldTurn(frameDelta){
-            this.turnTimer += frameDelta;
-            return this.turnTimer > ENEMY_TANK_TURN_TIMER_THRESHOLD;
-        }
+    }
+    shouldTurn(frameDelta){
+        this.turnTimer += frameDelta;
+        return this.turnTimer > ENEMY_TANK_TURN_TIMER_THRESHOLD;
+    }
 
-        _turnRandomly(){
-            const randomDirection =   Math.floor(Math.random() * 4);
-            this._turn(randomDirection);
-            this.turnTimer = 0;
+    turnRandomly(){
+        const randomDirection =   Math.floor(Math.random() * 4);
+        this.turn(randomDirection);
+        this.turnTimer = 0;
+    }
 
+    shouldBulletRun(frameDelta){
+        const randBulletTimer =  Math.floor(Math.random() * 500000);
+        
+        if ( this.bulletTimer < randBulletTimer ){
+            this.bulletTimer += frameDelta;
+            return false;
+        }    
+        else{ 
+            this.bulletTimer = 0;
+            return true;
         }
+    }
         
 }
