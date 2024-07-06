@@ -99,7 +99,7 @@ export default class Bullet extends GameObject {
             (object.type == "playerTank" && this.isFromEnemyTank) ||
             (object.type == "enemyTank" && this.isFromPlayerTank) ||
             (object.type == "bullet" && this.isFromEnemyTank && object.isFromPlayerTank) || 
-            (object.type == "bullet" && this.isFromPlayerTank && isFromEnemyTank)
+            (object.type == "bullet" && this.isFromPlayerTank && object.isFromEnemyTank)
         );
 
     }

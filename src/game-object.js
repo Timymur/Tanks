@@ -1,11 +1,5 @@
 import EventEmitter from "./event-emitter.js";
 export default class GameObject extends EventEmitter { // игровой объект, хранит координаты, размеры и спрайт объекта
-    static Direction = {
-        UP: 0,
-        RIGHT: 1,
-        DOWN: 2,
-        LEFT: 3
-    };
     
     constructor({ x, y, width, height, sprites } = {}) {
         super();
@@ -41,8 +35,8 @@ export default class GameObject extends EventEmitter { // игровой объ�
         
     }
 
-    move(axis, value) {
-        this[axis] += value * this.speed;
+    move(axis, value) {// функция движения, принимает ось и значение. (х или у) и (1 или -1)
+        this[axis] += value * this.speed; // двигаем объект по назначенной оси на назначенное расстояние
     }
 
     stop() {

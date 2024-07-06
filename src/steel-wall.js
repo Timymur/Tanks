@@ -7,7 +7,8 @@ export default class SteelWall extends Wall {
         
         this.sprites = STEEL_WALL_SPRITES;
     }
-    hit(bullet) {
-        if (this.isDestroyed) return;
+    hit() {// при попадании пули ничего не происходит.
+        // метод нужен для того, чтобы не было ошибки.
+        // при коллизии пули, она вызывает метод hit  у объекта, в который врезалась
     }
 }

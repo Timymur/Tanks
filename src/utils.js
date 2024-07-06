@@ -1,6 +1,6 @@
 import { Direction } from './constants.js';
 
-export function getDirectionForKeys(keys) {
+export function getDirectionForKeys(keys) { // возвращаем направление в зависимости от нажатой кнопки
     if (keys.has('ArrowUp')) {
         return Direction.UP;
     }
@@ -22,7 +22,7 @@ export function getAxisForDirection(direction) {
     return direction % 2 === 0 ? 'y' : 'x'; // Если остаток от деления равен 0, то возвращаем у. Иначе х. 
 }
 
-export function getValueForDirection(direction) {
+export function getValueForDirection(direction) {// возвращаем значение на которое нужно продвинуться по определенной оси
     switch (direction) {
         case Direction.UP: return -1;
         case Direction.RIGHT: return 1;
@@ -31,11 +31,11 @@ export function getValueForDirection(direction) {
     }
 }
 
-export function getSideForDirection(direction) {
-    switch (direction) {
-        case Direction.UP: return 'top';
-        case Direction.RIGHT: return 'right';
-        case Direction.DOWN: return 'bottom';
-        case Direction.LEFT: return 'left';
-    }
-}
+// export function getSideForDirection(direction) {
+//     switch (direction) {
+//         case Direction.UP: return 'top';
+//         case Direction.RIGHT: return 'right';
+//         case Direction.DOWN: return 'bottom';
+//         case Direction.LEFT: return 'left';
+//     }
+// }

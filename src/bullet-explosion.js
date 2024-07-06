@@ -5,7 +5,7 @@ export default class BulletExplosion extends Explosion {
     constructor(args) {
         super(args);
 
-        this.width = BULLET_EXPLOSION_WIDTH;
+        this.width = BULLET_EXPLOSION_WIDTH; // размеры и спрайты взрыва от пули
         this.height = BULLET_EXPLOSION_HEIGHT;
         this.speed = BULLET_EXPLOSION_SPEED;
         this.sprites = BULLET_EXPLOSION_SPRITES;

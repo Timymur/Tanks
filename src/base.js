@@ -18,6 +18,6 @@ export default class Base extends GameObject{
     }
     hit() {
         this.destroyed = true;
-        this.emit('destroyed', this);
+        this.emit('destroyed', this); // дестроейд на базе вызывает gameover  на stage
     }
 }

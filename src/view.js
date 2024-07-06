@@ -23,18 +23,18 @@ export default class View{ //Класс который будет отображ
     get height(){
         return this.canvas.height;
     }
-    async init() { // После загрузки изображения во view, метод вернет 1 в game, и даст возможность дальше выполнять код
-        await this.sprite.load();
+    async init() { // Загрузка картинки со спрайтами
+        await this.sprite.load();// Браузер загрузил картинку, получает промис с класса sprite
     }
 
-    update(stage, gameOver){ // обновление отображение, принимает объект  world
+    update(stage, gameOver){ // обновление отображения 
         // методы описаны ниже
 
         this.clearScreen(); // очистка экрана 
         if(!gameOver){
-            this.renderStage(stage);
-            this.renderPanel(stage); 
-            //this.renderGrid();
+            this.renderStage(stage); // воспроизведение уровня(отрисовка)
+            this.renderPanel(stage); // отрисовка панели
+            this.renderGrid(); // отрисовка сетки ( вспомогательный метод)
         }
         else{
             this.gameOver();
@@ -48,43 +48,42 @@ export default class View{ //Класс который будет отображ
     }
 
     renderStage(stage) {
-        this.context.fillStyle = '#626262';
+        this.context.fillStyle = '#626262'; // серое поле
         this.context.fillRect(0, 0 , this.width, this.height );
         
-        this.context.fillStyle = '#000000';
+        this.context.fillStyle = '#000000'; // черное игровое поле
         this.context.fillRect(PLAYFIELD_X, PLAYFIELD_Y , PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT);
 
-        for (const object of stage.objects) {
-            const { x, y, width, height, sprite } = object;
+        for (const object of stage.objects) {// stage.object хранит все объекты находящиеся на уровне, перебираем их
+            const { x, y, width, height, sprite } = object; // вынимаем геттеры из объектов
             if(!sprite) return;
             
-            this.context.drawImage(
-                this.sprite.image,
-                ...sprite,
-                PLAYFIELD_X + x,
+            this.context.drawImage( // отрисовываем объект
+                this.sprite.image, // основная картинка со всеми спрайтами
+                ...sprite, // распаковываем массив спрайтов, x, y , width, height(что , откуда и сколько вырезать со спрайта)
+                PLAYFIELD_X + x, // где и сколько нарисовать на игровом поле
                 PLAYFIELD_Y + y,
                 width, 
                 height
             );
 
-            if (object.debug) {
-                this.context.strokeStyle = '#ff0000';
-                this.context.lineWidth = 2;
-                this.context.strokeRect(x + 1, y + 1, width - 2, height - 2);
-                object.debug = false;
-            }
+            // if (object.debug) { // вспомогательный скрипт
+            //     this.context.strokeStyle = '#ff0000';
+            //     this.context.lineWidth = 2;
+            //     this.context.strokeRect(x + 1, y + 1, width - 2, height - 2);
+            //     object.debug = false;
+            // }
         }
     }
-    renderPanel(stage){
-        this.renderEnemyTankCounts(stage);
-        this.renderPlayer1Lives(stage);
-        this.renderStageNumber(stage);
-        
-        
+
+    renderPanel(stage){ // отрисовка боковой панели
+        this.renderEnemyTankCounts(stage);// счет танков противников
+        this.renderPlayer1Lives(stage); // количество жизней игрового танка
+        this.renderStageNumber(stage); // номер уровня
     }
     
-    renderGrid() { // метод отрисовки сетки
-        for (let y = 0; y < NUMBER_OF_UNITS; y++) {
+    renderGrid() { // метод отрисовки сетки (вспомогательный метод)
+        for (let y = 0; y < NUMBER_OF_UNITS; y++) { // толстая сетка
             for (let x = 0; x < NUMBER_OF_UNITS; x++) {
                 this.context.strokeStyle = '#ffffff';
                 this.context.lineWidth = .2;
@@ -95,7 +94,7 @@ export default class View{ //Класс который будет отображ
                     UNIT_SIZE - 2);
             }
         }
-        for (let y = 0; y < NUMBER_OF_UNITS * 2; y++) {
+        for (let y = 0; y < NUMBER_OF_UNITS * 2; y++) { // тонкая сетка 
             for (let x = 0; x < NUMBER_OF_UNITS * 2; x++) {
                 this.context.strokeStyle = '#ffffff';
                 this.context.lineWidth = .1;
@@ -109,9 +108,9 @@ export default class View{ //Класс который будет отображ
     }
     
     renderEnemyTankCounts(stage){
-        for(let i = 0; i < stage.enemyTanks.length ; i ++ ){
+        for(let i = 0; i < stage.enemyTanks.length ; i ++ ){ // Перебираем массив с танками противниками
             
-            if ( i < 10){
+            if ( i < 10){ // до 10 рисуем левый столбик
                 
                 this.context.drawImage(
                     this.sprite.image,
@@ -125,7 +124,7 @@ export default class View{ //Класс который будет отображ
                     TILE_SIZE -3
                 );
             }
-            else{
+            else{ // после 10 рисуем правый столбик
                 this.context.drawImage(
                     this.sprite.image,
                     UNIT_SIZE * 20,
@@ -165,9 +164,8 @@ export default class View{ //Класс который будет отображ
             TILE_SIZE, 
             TILE_SIZE
         );
-        let countLife = stage.playerTank.countLife;
-        
-        
+
+        let countLife = stage.playerTank.countLife; // количество жизней игрового танка
         this.context.drawImage( // количество жизней
             this.sprite.image,
             ...NUMBER_SPRITES[countLife],

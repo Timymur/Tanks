@@ -8,44 +8,44 @@ export default class BrickWall extends Wall {
 
         
         this.sprites = BRICK_WALL_SPRITES;
-        this.state = 0; 
-        this.isDestructable = true;
+        this.state = 0; // состояние , в зависимости от него отображается спрайт
+        this.isDestructable = true; // разрушимость
         this.isDestroyed = false;
         this.lastHitDirection = -1;
     }
 
-    get sprite() {
+    get sprite() { // спрайт. зависит от состояния
         return this.sprites[this.state];
     }
 
-    update({ stage }) {
+    update({ stage }) {// если разрушен, то удаляет с уровня
         if (this.isDestroyed) {
             stage.objects.delete(this);
         }
     }
 
-    hit(bullet) {
+    hit(bullet) { // при попадании пули
         
-        if (this.isDestroyed) return;
+        if (this.isDestroyed) return;// если разрушен, то ничего не делаем, в предыдущем методе стена удаляется
 
-        this.damage += 1;
+        this.damage += 1; // добавляем урон
 
-        if (this.damage === 2) {
+        if (this.damage === 2) {// если урон равн 2, то стена разрушена
             this.isDestroyed = true;
         }
 
-        switch (bullet.direction) {
-            case Direction.UP:
-                this.state =  4;
+        switch (bullet.direction) {// в зависимотси от направления пули, меняем состояние стены.
+            case Direction.UP: // пуля вверх
+                this.state =  4; // состояние четыре, половинка стены сверху остается, а снизу убирается
                 break;
-            case Direction.LEFT:
-                this.state =  3;
+            case Direction.LEFT: // пуля влево
+                this.state =  3; // состояние 3, половина стены слева  остается,  справа убирается
                 break;
-            case Direction.DOWN:
-                this.state =  2;
+            case Direction.DOWN: // пуля вниз
+                this.state =  2;// состояние два , снизу остается, сверху убирается
                 break;
-            case Direction.RIGHT:
-                this.state =  1;
+            case Direction.RIGHT:// пуля вправо
+                this.state =  1;// слева убирается, справа остается
                 break;
         }
     }

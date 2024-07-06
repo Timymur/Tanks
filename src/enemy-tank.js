@@ -16,15 +16,11 @@ export default class EnemyTank extends Tank {
         this.sprites = ENEMY_TANK_SPRITES[0];
         this.bulletTimer = 0;
         this.turnTimer = 0;
-        
-
     }
 
     setPosition(positionIndex){
         this.x = ENEMY_TANK_START_POSITIONS[positionIndex][0];
         this.y = ENEMY_TANK_START_POSITIONS[positionIndex][1];
-        
-
     }
 
     update({ stage,  frameDelta }) {
